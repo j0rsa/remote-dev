@@ -37,7 +37,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           docker buildx build \
-          --platform linux/amd64,linux/arm/v7,linux/arm/v6,linux/arm64 \
+          --platform linux/amd64,linux/arm/v7,linux/arm64 \
           --tag ${DOCKER_IMAGE}:${{ steps.vars.outputs.sha_short }} \
           --tag ${DOCKER_IMAGE}:latest \
           --push .
