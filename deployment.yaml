@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remote-pod
+  labels:
+    env: dev
+    app: remote-pod
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: remote-pod
+      labels:
+        env: dev
+        app: remote-pod
+    spec:
+      containers:
+        - name: remote-pod
+          image: j0rsa/remote-dev:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: USER_NAME
+              value: remote_user
+            - name: PUBLIC_KEY
+              value: "ssh-rsa ... alias@domain"
+          ports:
+            - name: ssh
+              containerPort: 22
+          resources:
+            requests:
+              cpu: 100m
+              memory: 2Gi
+            limits:
+              cpu: 500m
+              memory: 2Gi
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      env: dev
+      app: remote-pod
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remote-pod
+spec:
+  selector:
+    env: dev
+    app: remote-pod
+  ports:
+    - port: 22
+      targetPort: ssh
