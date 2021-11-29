@@ -1,0 +1,43 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKER_IMAGE: j0rsa/remote-dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Docker login
+        if: github.ref == 'refs/heads/main'
+        uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          buildx-version: latest
+
+      - name: Set Vars
+        id: vars
+        run: |
+          echo ::set-output name=sha_short::$(git rev-parse --short=6 ${{ github.sha }})
+
+      - name: Docker buildx build and push
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker buildx build \
+          --platform linux/amd64,linux/arm/v7,linux/arm/v6,linux/arm64 \
+          --tag ${DOCKER_IMAGE}:${{ steps.vars.outputs.sha_short }} \
+          --tag ${DOCKER_IMAGE}:latest \
+          --push .
