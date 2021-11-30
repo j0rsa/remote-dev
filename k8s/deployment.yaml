@@ -1,12 +1,14 @@
+# Optional
 apiVersion: v1
 kind: Secret
 metadata:
-  name:
+  name: remote-key
 data:
-#  password protected ssh keys
-  id_rsa:
-  id_rsa.pub:
+  # ssh key pair with passphrase ONLY
+  id_rsa: "c3NoLXJzYSAuLi4="
+  id_rsa.pub: "cHJpdmF0ZSBrZXk="
 ---
+# Required
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,6 +48,17 @@ spec:
             limits:
               cpu: 500m
               memory: 2Gi
+          # optional
+          volumeMounts:
+            - mountPath: /home/remote_user/.ssh
+              name: ssh-key
+              readOnly: true
+
+      # optional
+      volumes:
+        - name: ssh-key
+          secret:
+            secretName: remote-key
       restartPolicy: Always
   selector:
     matchLabels:
