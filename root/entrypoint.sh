@@ -59,13 +59,7 @@ fi
 	apt install $EXTRA_PACKAGES
 
 echo "/ensureSecureKey.sh" >> "$H"/.bashrc
-
-echo 'echo "Welcome to Remote Develop Container"' >> "$H"/.bashrc
-echo 'echo ""' >> "$H"/.bashrc
-echo 'echo "To authorize this container please use the PUB ssh key"' >> "$H"/.bashrc
-echo 'echo "-------------------------------------"' >> "$H"/.bashrc
-echo 'cat $HOME/.ssh/id_rsa.pub' >> "$H"/.bashrc
-echo 'echo "-------------------------------------"' >> "$H"/.bashrc
+echo "alias welcome=/welcome.sh" >> "$H"/.bashrc
 
 # permissions
 chown -R "${USER_NAME}":"${USER_NAME}" \
@@ -73,7 +67,7 @@ chown -R "${USER_NAME}":"${USER_NAME}" \
 chmod go-w \
     "$H"
 chmod 700 \
-    "$H"/.ssh
+    "$H"/.ssh 2>/dev/null
 chmod 600 \
     "$H"/.ssh/authorized_keys
 

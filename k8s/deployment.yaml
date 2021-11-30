@@ -1,14 +1,3 @@
-# Optional
-apiVersion: v1
-kind: Secret
-metadata:
-  name: remote-key
-data:
-  # ssh key pair with passphrase ONLY
-  id_rsa: "c3NoLXJzYSAuLi4="
-  id_rsa.pub: "cHJpdmF0ZSBrZXk="
----
-# Required
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,7 +39,12 @@ spec:
               memory: 2Gi
           # optional
           volumeMounts:
-            - mountPath: /home/remote_user/.ssh
+            - mountPath: /home/remote_user/.ssh/id_rsa
+              subPath: id_rsa
+              name: ssh-key
+              readOnly: true
+            - mountPath: /home/remote_user/.ssh/id_rsa.pub
+              subPath: id_rsa.pub
               name: ssh-key
               readOnly: true
 
@@ -77,3 +71,14 @@ spec:
   ports:
     - port: 22
       targetPort: ssh
+
+---
+# Optional
+apiVersion: v1
+kind: Secret
+metadata:
+  name: remote-key
+data:
+  # ssh key pair with passphrase ONLY
+  id_rsa: "c3NoLXJzYSAuLi4="
+  id_rsa.pub: "cHJpdmF0ZSBrZXk="
