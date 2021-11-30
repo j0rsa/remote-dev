@@ -58,15 +58,14 @@ fi
 [[ -n "$EXTRA_PACKAGES" ]] && \
 	apt install $EXTRA_PACKAGES
 
-ssh-keygen -t rsa -q -f "$H/.ssh/id_rsa" -N ""
+echo "/ensureSecureKey.sh" >> "$H"/.bashrc
 
-echo "Welcome to Remote Develop Container" > "$H"/welcome
-echo "" >> "$H"/welcome
-echo "To authorize this container please use the PUB ssh key" >> "$H"/welcome
-echo "-------------------------------------" >> "$H"/welcome
-cat /home/"$USER_NAME"/.ssh/id_rsa.pub >> "$H"/welcome
-echo "-------------------------------------" >> "$H"/welcome
-echo "cat ~/welcome" >> "$H"/.bashrc
+echo 'echo "Welcome to Remote Develop Container"' >> "$H"/.bashrc
+echo 'echo ""' >> "$H"/.bashrc
+echo 'echo "To authorize this container please use the PUB ssh key"' >> "$H"/.bashrc
+echo 'echo "-------------------------------------"' >> "$H"/.bashrc
+echo 'cat $HOME/.ssh/id_rsa.pub' >> "$H"/.bashrc
+echo 'echo "-------------------------------------"' >> "$H"/.bashrc
 
 # permissions
 chown -R "${USER_NAME}":"${USER_NAME}" \

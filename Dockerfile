@@ -6,5 +6,5 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 
 EXPOSE 22
-COPY entrypoint.sh /root
-ENTRYPOINT "/root/entrypoint.sh"
+COPY root /
+ENTRYPOINT "/entrypoint.sh"

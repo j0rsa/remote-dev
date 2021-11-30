@@ -1,3 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name:
+data:
+#  password protected ssh keys
+  id_rsa:
+  id_rsa.pub:
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
